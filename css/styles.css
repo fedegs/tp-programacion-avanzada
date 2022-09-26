@@ -1,0 +1,20 @@
+.login-img {
+  background-image: url("../img/login.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+.login-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 8rem);
+}
+
+.warning {
+  color: #bb2124;
+}
+
+.success {
+  color: #22bb33;
+}
