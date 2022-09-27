@@ -14,7 +14,7 @@
     <nav class="container-fluid">
         <ul>
             <li>
-                <strong>🛍️ LibreMercado</strong>
+                <strong>🛍️ Amaclon</strong>
             </li>
         </ul>
         <ul>
