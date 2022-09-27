@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/pico.min.css">
     <!-- CUSTOM STYLES -->
     <link rel="stylesheet" href="../css/styles.css">
-    <title>LibreMercado</title>
+    <title>Amaclon</title>
 </head>
 <body>
     <nav class="container-fluid">
