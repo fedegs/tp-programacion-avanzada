@@ -14,11 +14,19 @@
     <nav class="container-fluid">
         <ul>
             <li>
-                <strong>🛍️ Amaclon</strong>
+                <strong style="font-size: 24px;">🛍️ Amaclon</strong>
             </li>
         </ul>
         <ul>
-            <li><a href="#">Login</a></li>
-            <li><a href="#">Register</a></li>
+            <li>
+                <b>
+                    <a href="#">Login</a>
+                </b>
+            </li>
+            <li>
+                <b>
+                    <a href="#">Register</a>
+                </b>    
+            </li>
         </ul> 
     </nav>

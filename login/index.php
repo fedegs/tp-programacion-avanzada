@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <article class="grid" style="padding: 0; overflow: hidden;">
         <div style="padding: 2rem;">
             <hgroup>
-                <h1>Login</h1>
+                <h2>Login</h2>
                 <h2>Hello! Welcome Back</h2>
             </hgroup>
             <form method="POST">
@@ -53,12 +53,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </label>
                 <?php
                 if (!empty($errorMsg)) {
-                    echo "<small class='warning'>{$errorMsg}</small>";
+                    echo "<div style='margin-bottom: 1rem;'><small class='warning'>{$errorMsg}</small></div>";
                 } else if (!empty($loginSuccessful)) {
                     echo "<small class='success'>{$loginSuccessful}</small>";
                 }
                 ?>
-                <input type="submit" name="submit" value="Login">
+                <button name="submit">Login</button>
             </form>
         </div>
         <div class="login-img"></div>    
