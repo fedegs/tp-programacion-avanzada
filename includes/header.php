@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../css/pico.min.css">
     <!-- CUSTOM STYLES -->
     <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/themeSwitcher.js" defer></script>
     <title>Amaclon</title>
 </head>
 <body>
@@ -30,3 +31,5 @@
             </li>
         </ul> 
     </nav>
+
+    <button id="theme-switcher" class="contrast switcher"></button>
