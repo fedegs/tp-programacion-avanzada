@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (isset($_SESSION["username"])) {
+    $username = $_SESSION["username"];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en" data-theme="auto">
 <head>
@@ -19,9 +26,19 @@
             </li>
         </ul>
         <ul>
+            <?php if ($username): ?>
+            <li>
+                <details role="list" dir="rtl">
+                    <summary aria-haspopup="listbox" role="link"><b><?php echo $username ?></b></summary>
+                    <ul role="listbox">
+                        <li><a href="../logout.php">Logout</a></li>
+                    </ul>
+                </details>
+            </li>
+            <?php else: ?>
             <li>
                 <b>
-                    <a href="#">Login</a>
+                    <a href="../login/">Login</a>
                 </b>
             </li>
             <li>
@@ -29,6 +46,7 @@
                     <a href="#">Register</a>
                 </b>    
             </li>
+            <?php endif; ?>
         </ul> 
     </nav>
 
