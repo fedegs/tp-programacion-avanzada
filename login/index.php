@@ -4,27 +4,16 @@ include_once "../includes/header.php";
 
 <?php
 
-// if (isset($_POST["submit"])) {
-//     $username = $_POST["username"];
-//     $password = $_POST["password"];
-    
-//     if ($username !== "fcytuader" && $username !== "programacionavanzada") {
-//         $errorMsg = "Wrong username or password!";
-//     } else {
-//         $loginSuccessful = "Login successful!! :)";
-//     }
-// } 
+session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST["username"];
-    $password = $_POST["password"];
-    
-    if ($username !== "fcytuader" && $username !== "programacionavanzada") {
-        $errorMsg = "Wrong username or password!";
-    } else {
-        $loginSuccessful = "Login successful!! :)";
-    }
-} 
+if(isset($_SESSION["username"])) {
+    header("Location: ../");
+}
+
+if (isset($_SESSION["loginError"])) {
+    $errorMsg = $_SESSION["loginError"];
+    unset($_SESSION["loginError"]);
+}
 
 
 ?>
@@ -38,33 +27,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h2>Login</h2>
                 <h2>Hello! Welcome Back</h2>
             </hgroup>
-            <form method="POST">
+            <form method="POST" action="./procesoLogin.php">
                 <label>
                     Username:
                     <input type="text"
                         name="username"
+                        minlength="3"
+                        autocapitalize="none"
                         required />
                 </label>
                 <label>
                     Password:
                     <input type="password"
                         name="password"
+                        minlength="6"
                         required />
                 </label>
-                <?php
-                if (!empty($errorMsg)) {
-                    echo "<div style='margin-bottom: 1rem;'><small class='warning'>{$errorMsg}</small></div>";
-                } else if (!empty($loginSuccessful)) {
-                    echo "<small class='success'>{$loginSuccessful}</small>";
-                }
-                ?>
-                <button name="submit">Login</button>
+                
+                <?php if($errorMsg): ?>
+                <div style='margin-bottom: 1rem;'><small class='warning'><?php echo $errorMsg ?></small></div>
+                <?php endif; ?>
+            
+                <button type="submit">Login</button>
             </form>
         </div>
         <div class="login-img"></div>    
     </article>
 </main>
-
+<script src="../js/login.js"></script>
 <!-- HTML END -->
 
 <?php
