@@ -4,17 +4,22 @@ include_once "../includes/header.php";
 
 <?php
 
-session_start();
-
-if(isset($_SESSION["username"])) {
-    header("Location: ../");
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
+
+if (isset($_SESSION["username"])) {
+    header("Location: ../");
+    exit();
+}
+
+$token = bin2hex(random_bytes(16));
+$_SESSION["token"] = $token;
 
 if (isset($_SESSION["loginError"])) {
     $errorMsg = $_SESSION["loginError"];
     unset($_SESSION["loginError"]);
 }
-
 
 ?>
 
@@ -44,6 +49,12 @@ if (isset($_SESSION["loginError"])) {
                         required />
                 </label>
                 
+                <div class="g-recaptcha"
+                    style="margin-bottom: 1rem;" 
+                    data-sitekey="6LfISmYiAAAAAEvJJKk9Dz1qlC1Wi7NXkqxBo1bk"></div>
+                
+                <input type="hidden" name="token" value=<?php echo $token; ?> />
+                
                 <?php if($errorMsg): ?>
                 <div style='margin-bottom: 1rem;'><small class='warning'><?php echo $errorMsg ?></small></div>
                 <?php endif; ?>
@@ -55,6 +66,7 @@ if (isset($_SESSION["loginError"])) {
     </article>
 </main>
 <script src="../js/login.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <!-- HTML END -->
 
 <?php

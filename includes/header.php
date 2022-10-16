@@ -1,8 +1,13 @@
 <?php
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if (isset($_SESSION["username"])) {
     $username = $_SESSION["username"];
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -28,6 +33,7 @@ if (isset($_SESSION["username"])) {
         </ul>
         <ul>
             <?php if ($username): ?>
+            Logged as:
             <li>
                 <details role="list" dir="rtl">
                     <summary aria-haspopup="listbox" role="link"><b><?php echo $username ?></b></summary>
