@@ -19,7 +19,7 @@ if (isset($_SESSION["registerSuccessful"])) {
 ?>
 
 <main class="container" style="max-width: 720px;">
-    <article>
+    <article style="margin-top: 0;">
         <h3>Registrate en amaclon!</h3>
         <form action="./registerProcess.php" method="post">
             <label>
