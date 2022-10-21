@@ -5,11 +5,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION["username"])) {
+if (!isset($_SESSION["user"])) {
     header('Location: ../login/');
     exit();
 } else {
-    $username = $_SESSION["username"];
+    $username = $_SESSION["user"]["username"];
 }
 ?>
 

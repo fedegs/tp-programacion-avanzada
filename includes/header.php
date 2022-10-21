@@ -4,8 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (isset($_SESSION["username"])) {
-    $username = $_SESSION["username"];
+if (isset($_SESSION["user"])) {
+    $username = $_SESSION["user"]["username"];
 }
 
 ?>
@@ -32,7 +32,7 @@ if (isset($_SESSION["username"])) {
             </li>
         </ul>
         <ul>
-            <?php if ($username): ?>
+            <?php if (isset($username)): ?>
             Logged as:
             <li>
                 <details role="list" dir="rtl">
@@ -50,7 +50,7 @@ if (isset($_SESSION["username"])) {
             </li>
             <li>
                 <b>
-                    <a href="#">Register</a>
+                    <a href="../register/">Register</a>
                 </b>    
             </li>
             <?php endif; ?>

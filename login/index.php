@@ -55,7 +55,7 @@ if (isset($_SESSION["loginError"])) {
                 
                 <input type="hidden" name="token" value=<?php echo $token; ?> />
                 
-                <?php if($errorMsg): ?>
+                <?php if(isset($errorMsg)): ?>
                 <div style='margin-bottom: 1rem;'><small class='warning'><?php echo $errorMsg ?></small></div>
                 <?php endif; ?>
             
