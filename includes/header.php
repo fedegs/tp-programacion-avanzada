@@ -33,6 +33,11 @@ if (isset($_SESSION["user"])) {
         </ul>
         <ul>
             <?php if (isset($username)): ?>
+            <li>
+                <strong>
+                    <a href="../products/">My products</a>
+                </strong>
+            </li>
             Logged as:
             <li>
                 <details role="list" dir="rtl">
