@@ -203,6 +203,7 @@ if ($result) {
         const hiddenInput = document.createElement("input")
         hiddenInput.setAttribute("type", "hidden")
         hiddenInput.setAttribute("value", id)
+        hiddenInput.setAttribute("name", "id")
         form.appendChild(hiddenInput)
     }
 
