@@ -50,7 +50,7 @@ if ($result) {
 
     <h3>Mis productos</h3>
 
-    <table role="grid">
+    <table role="grid" style="display: block; overflow-x: auto; white-space: no-wrap;">
     <?php if (!isset($products)): ?>
         <p>No tenés productos publicados :(</p>
     <?php else: ?>  
@@ -81,7 +81,7 @@ if ($result) {
                         <td>$category</td>
                         <td>
                             <a href='#' onclick='$jsFunction'>Editar</a>
-                            <a class='warning' href='./deleteProductProcess?id=$id'>Eliminar</a>
+                            <a class='warning' href='./deleteProductProcess.php?id=$id'>Eliminar</a>
                         </td>
                     </tr>";
                 }
@@ -138,7 +138,7 @@ if ($result) {
                 <a id="closeModalProduct" href="#" aria-label="Close" class="close"></a>
                 <h3 style="margin-bottom: .5rem;">Editando producto</h3>
             </header>
-            <form action="./addProductProcess.php" method="post">
+            <form action="./editProductProcess.php" method="post">
                 <div class="grid">
                     <label>
                         Título

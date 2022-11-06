@@ -7,10 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     exit();
 }
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+$productId = $_POST["id"];
 $title = $_POST["title"];
 $price = $_POST["price"];
 $description = $_POST["description"];
@@ -26,12 +23,19 @@ try {
     if (!$category) {
         throw new Error("Category is required");
     }
+    if (!$productId) {
+        throw new Error("Id is required");
+    }
 
     $dbInstance = DB::getInstance();
     $conn = $dbInstance->getConnection();
 
-    $stmt = $conn->prepare("INSERT INTO products(title, description, price, published_by, category_id) VALUES(?,?,?,?,?)");
-    $stmt->bind_param("ssdii", $title, $description, $price, $_SESSION["user"]["id"], $category);
+    $sql = "UPDATE products
+    SET title = ?, description = ?, price = ?, category_id = ?
+    WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssdii", $title, $description, $price, $category, $productId);
     $stmt->execute();
     $stmt->close();
     header("Location: ./");

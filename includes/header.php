@@ -28,7 +28,9 @@ if (isset($_SESSION["user"])) {
     <nav class="container-fluid">
         <ul>
             <li>
-                <strong style="font-size: 24px;">🛍️ Amaclon</strong>
+                <strong style="font-size: 24px;">
+                    <a href="../home/">🛍️ Amaclon</a>
+                </strong>
             </li>
         </ul>
         <ul>
