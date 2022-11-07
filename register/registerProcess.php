@@ -15,11 +15,13 @@ $email = $_POST["email"];
 $password = $_POST["password"];
 $passwordRepeated = $_POST["passwordRepeated"];
 
-// TODO check if username is unique
-
 try {
     if (!$username) {
         throw new Error("Username is required");
+    }
+
+    if (!preg_match("/^[a-zA-Z0-9-'_]*$/", $username)) {
+        throw new Error("Invalid username");
     }
     
     $dbInstance = DB::getInstance();
@@ -41,8 +43,16 @@ try {
         throw new Error("Email is required");
     }
 
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new Error("Invalid email format");
+    }
+
     if (!$password || !$passwordRepeated) {
         throw new Error("Password is required");
+    }
+
+    if (strlen($password) < 6) {
+        throw new Error("Password min length is 6");
     }
 
     if ($password !== $passwordRepeated) {
@@ -62,7 +72,6 @@ try {
 } catch (Error $e) {
     $_SESSION["registerError"] = $e->getMessage();
     header("Location: ./");
-    exit(); 
-} catch (mysqli_sql_exception $sqlE) {
-    echo $sqlE->getMessage();
+} catch (mysqli_sql_exception $mysqli_err) {
+    header("Location: ../error/");
 }
