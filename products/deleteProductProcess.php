@@ -39,4 +39,6 @@ try {
     header("Location: ./");
 } catch (Error $e) {
     echo $e->getMessage();
+} catch (mysqli_sql_exception $mysqli_err) {
+    header("Location: ../error/");
 }

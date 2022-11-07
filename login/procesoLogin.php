@@ -1,46 +1,38 @@
 <?php
-
 include_once "../includes/db.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $username = $_POST["username"];
-    $password = $_POST["password"];
-    $token = $_POST["token"];
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    http_response_code(405);
+    exit();
+}
 
-    $ip = $_SERVER['REMOTE_ADDR'];
-    $captcha = $_POST["g-recaptcha-response"];
-    $secretkey = '6LfISmYiAAAAAPrfaOFWo9y7ojESAPMz96-SK4p2';
+$username = $_POST["username"];
+$password = $_POST["password"];
+$token = $_POST["token"];
 
-    $respuesta = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secretkey&response=$captcha&remoteip=$ip");
+$ip = $_SERVER['REMOTE_ADDR'];
+$captcha = $_POST["g-recaptcha-response"];
+$secretkey = '6LfISmYiAAAAAPrfaOFWo9y7ojESAPMz96-SK4p2';
 
-    $atributo = json_decode($respuesta, TRUE);
+$respuesta = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secretkey&response=$captcha&remoteip=$ip");
 
+$atributo = json_decode($respuesta, TRUE);
+
+try {
     if (!$atributo['success']) {
-        $_SESSION["loginError"] = "Verify captcha";
-        header("Location: ./");
-        exit();
-    }
-    
-    if ($token !== $_SESSION["token"]) {
-        $_SESSION["loginError"] = "Invalid token";
-        header("Location: ./");
-        exit();
+        throw new Error("Verify captcha");
     }
 
-    // if ($username !== "fcytuader" && $username !== "programacionavanzada") {
-    //     $_SESSION["loginError"] = "Wrong username or password!";
-    //     header("Location: ./");
-    //     exit();
-    // }
+    if ($token !== $_SESSION["token"]) {
+        throw new Error("Invalid token");
+    }
 
     if (!$username || !$password) {
-        $_SESSION["loginError"] = "Username and password must be provided";
-        header("Location: ./");
-        exit();
+        throw new Error("Username and password must be provided");
     }
 
     $dbInstance = DB::getInstance();
@@ -53,19 +45,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $data = $result->fetch_assoc();
     
     if (!$data) {
-        $_SESSION["loginError"] = "Wrong username or password";
-        header("Location: ./");
-        exit();
+        throw new Error("Wrong username or password");
     }
-
+    
     $passwordHash = $data["password"];
     $id = $data["id"];
     $email = $data["email"];
-
+    
     if(!password_verify($password, $data["password"])) {
-        $_SESSION["loginError"] = "Wrong username or password";
-        header("Location: ./");
-        exit();
+        throw new Error("Wrong username or password");
     }
     
     $_SESSION["user"] = [
@@ -74,4 +62,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         "email" => $email
     ];
     header("Location: ../home");
+} catch (Error $e) {
+    $_SESSION["loginError"] = $e->getMessage();
+    header("Location: ./");
+} catch (mysqli_sql_exception $mysqli_err) {
+    header("Location: ../error/");
 }

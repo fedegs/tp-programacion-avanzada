@@ -43,16 +43,29 @@ if ($result) {
     }
 }
 
+if (isset($_SESSION["addProductError"])) {
+    $addProductErrorMsg = $_SESSION["addProductError"];
+    unset($_SESSION["addProductError"]);
+}
+
+if (isset($_SESSION["editProductError"])) {
+    $editProductErrorMsg = $_SESSION["editProductError"];
+    unset($_SESSION["editProductError"]);
+}
 ?>
 
 <main class="container">
     <button id="btnAddProduct">Add product</button>
 
-    <h3>Mis productos</h3>
+    <h3 style="margin-bottom: 1rem;">Mis productos</h3>
 
-    <table role="grid" style="display: block; overflow-x: auto; white-space: no-wrap;">
+    <?php if(isset($editProductErrorMsg)): ?>
+    <div style='margin-bottom: 1rem;'><small class='warning'><?php echo "Error al editar: " . $editProductErrorMsg;?></small></div>
+    <?php endif; ?>
+
+    <table id="tabla" role="grid" style="display: block; overflow-x: auto; white-space: no-wrap;">
     <?php if (!isset($products)): ?>
-        <p>No tenés productos publicados :(</p>
+        <p>No tenés productos publicados 😢</p>
     <?php else: ?>  
         <thead>
             <tr>
@@ -66,9 +79,9 @@ if ($result) {
         <tbody>
             <?php
                 foreach ($products as $product) {
-                    $title = $product["title"];
-                    $description = $product["description"];
-                    $price = $product["price"];
+                    $title = htmlspecialchars($product["title"], ENT_QUOTES, 'UTF-8'); 
+                    $description = htmlspecialchars($product["description"], ENT_QUOTES, 'UTF-8');
+                    $price = htmlspecialchars($product["price"], ENT_QUOTES, 'UTF-8');
                     $category = $product["category"];
                     $id = $product["id"];
                     
@@ -80,8 +93,8 @@ if ($result) {
                         <td>$ $price</td>
                         <td>$category</td>
                         <td>
-                            <a href='#' onclick='$jsFunction'>Editar</a>
-                            <a class='warning' href='./deleteProductProcess.php?id=$id'>Eliminar</a>
+                            <a href='#' onclick='$jsFunction' role='button' class='outline btn-action'><i class='fa-solid fa-pen-to-square'></i>Edit</a>
+                            <a class='warning outline btn-action' href='./deleteProductProcess.php?id=$id' role='button'><i class='fa-regular fa-trash-can'></i>Delete</a>
                         </td>
                     </tr>";
                 }
@@ -90,7 +103,7 @@ if ($result) {
     <?php endif; ?>
     </table>
 
-    <dialog id="modalProduct">
+    <dialog id="modalProduct" <?php if (isset($addProductErrorMsg)) echo "open"; ?>>
         <article>
             <header style="padding-bottom: .5rem; margin-bottom: 1rem;">
                 <a id="closeModalProduct" href="#" aria-label="Close" class="close"></a>
@@ -100,7 +113,7 @@ if ($result) {
                 <div class="grid">
                     <label>
                         Título
-                        <input name="title" type="text" required />
+                        <input name="title" type="text" required minlength="4" />
                     </label>
                     <label>
                         Precio
@@ -124,6 +137,9 @@ if ($result) {
                             ?>
                     </select>
                 </label>
+                <?php if(isset($addProductErrorMsg)): ?>
+                <div style='margin-bottom: 1rem;'><small class='warning'><?php echo $addProductErrorMsg ?></small></div>
+                <?php endif; ?>
                 <div class="grid">
                     <button class="secondary" type="reset">Resetear</button>
                     <button type="submit">Agregar</button>
@@ -142,7 +158,7 @@ if ($result) {
                 <div class="grid">
                     <label>
                         Título
-                        <input name="title" type="text" required />
+                        <input minlength="4" name="title" type="text" required />
                     </label>
                     <label>
                         Precio
@@ -176,46 +192,6 @@ if ($result) {
 
 </main>
 
-<script>
-    const buttonsClose = document.querySelectorAll("#closeModalProduct")
-    const btnAddProduct = document.querySelector("#btnAddProduct")
-    const modalProduct = document.querySelector("#modalProduct")
-    const modalEditProduct = document.querySelector("#modalEditProduct")
-
-    function openEditModal(id, title, description, price, category) {
-        modalEditProduct.setAttribute("open", true)
-
-        const form = modalEditProduct.querySelector("form")
-        modalEditProduct.querySelector("input[name='title'").value = title
-        modalEditProduct.querySelector("input[name='price'").value = price
-        modalEditProduct.querySelector("textarea[name='description'").value = description
-        const options = modalEditProduct.querySelectorAll("option")
-        options.forEach(opt => {
-            if (opt.getAttribute("value") === "") {
-                opt.removeAttribute("selected")
-            } else {
-                if (opt.text === category) {
-                    opt.setAttribute("selected", true)
-                }
-            }
-        })
-
-        const hiddenInput = document.createElement("input")
-        hiddenInput.setAttribute("type", "hidden")
-        hiddenInput.setAttribute("value", id)
-        hiddenInput.setAttribute("name", "id")
-        form.appendChild(hiddenInput)
-    }
-
-    btnAddProduct.addEventListener("click", () => {
-        modalProduct.setAttribute("open", true)
-    })
-
-    buttonsClose.forEach((btn) => btn.addEventListener("click", () => {
-        modalEditProduct.removeAttribute("open")
-        modalProduct.removeAttribute("open")
-    }))
-
-</script>
+<script src="../js/myProducts.js"></script>
 
 <?php include_once "../includes/footer.php" ?>

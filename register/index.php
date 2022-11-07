@@ -20,14 +20,14 @@ if (isset($_SESSION["registerSuccessful"])) {
 
 <main class="container" style="max-width: 720px;">
     <article style="margin-top: 0;">
-        <h3>Registrate en amaclon!</h3>
+        <h3>Registrate en Amaclon!</h3>
         <form action="./registerProcess.php" method="post">
             <label>
                 Nuevo nombre de usuario:
                 <input type="text" 
                     name="username" 
                     required 
-                    minlength="3" 
+                    minlength="3"
                     autocapitalize="none"/>
             </label>
             <label>

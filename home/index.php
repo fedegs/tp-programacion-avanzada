@@ -1,6 +1,7 @@
 <?php include_once "../includes/header.php" ?>
 
 <?php
+include_once "../includes/db.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -13,8 +14,6 @@ if (!isset($_SESSION["user"])) {
     $username = $_SESSION["user"]["username"];
 }
 
-include_once "../includes/db.php";
-
 $dbInstance = DB::getInstance();
 $conn = $dbInstance->getConnection();
 
@@ -22,37 +21,45 @@ if (isset($_GET["search"])) {
     $search = $_GET["search"];
     $searchVar = "%" . $search . "%";
     
-    $sql = "SELECT 
-        p.title, p.price, c.name, u.email 
-    FROM 
-        products p 
-    INNER JOIN 
-        categories c ON c.id = p.category_id 
-    INNER JOIN 
-        users u ON p.published_by = u.id 
-    WHERE 
-        p.title LIKE ? 
-    ORDER BY p.published_at 
-    LIMIT 15";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $searchVar);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $stmt->close();
-} else {
-    $sql = "SELECT 
+    try {
+        $sql = "SELECT 
             p.title, p.price, c.name, u.email 
         FROM 
             products p 
         INNER JOIN 
             categories c ON c.id = p.category_id 
         INNER JOIN 
-            users u ON p.published_by = u.id
-        ORDER BY p.published_at 
+            users u ON p.published_by = u.id 
+        WHERE 
+            p.title LIKE ? 
+        ORDER BY p.published_at DESC, p.id DESC
         LIMIT 15";
     
-    $result = $conn->query($sql);
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $searchVar);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+    } catch (mysqli_sql_exception $mysqli_err) {
+        header("Location: ../error/");
+    }
+} else {
+    try {
+        $sql = "SELECT 
+                p.title, p.price, c.name, u.email 
+            FROM 
+                products p 
+            INNER JOIN 
+                categories c ON c.id = p.category_id 
+            INNER JOIN 
+                users u ON p.published_by = u.id
+            ORDER BY p.published_at DESC, p.id  DESC
+            LIMIT 15";
+        
+        $result = $conn->query($sql);
+    } catch (mysqli_sql_exception $mysqli_err) {
+        header("Location: ../error/");
+    }
 }
 
 
@@ -70,30 +77,31 @@ if ($result) {
 ?>
 
 <main class="container" style="padding-top: .5rem;">
-    <form action="." method="get">
+    <form class="search-bar" action="." method="get">
         <input type="search" id="search" name="search" placeholder="Search">
         <button type="submit">Buscar</button>
     </form>
     <?php if (isset($search)): ?>
-    <h4 style="margin: .5rem 0;">Resultados de la búsqueda <?php echo $search; ?>:</h4>
+    <h4 style="margin: .5rem 0;">Resultados de la búsqueda <?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>:</h4>
     <?php else: ?>
     <h4 style="margin: .5rem 0;">Últimos productos añadidos:</h4>
     <?php endif; ?>
     <div class="products-container">
         <?php
-        
         if (isset($products)) {
             foreach ($products as $product) {
-                $title = $product["title"];
-                $price = $product["price"];
-                $email = $product["email"];
+                $title = htmlspecialchars($product["title"], ENT_QUOTES, 'UTF-8');
+                $price = htmlspecialchars($product["price"], ENT_QUOTES, 'UTF-8');
+                $email = htmlspecialchars($product["email"], ENT_QUOTES, 'UTF-8');
+                $category = $product["category"];
+                $categoryImgName = "cat_" . $category . ".webp";
                 echo "
                     <article class='grid' style='gap: 0;'>
                         <div class='img-container'>
-                            <img class='category-img' src='https://placekitten.com/g/350/200' alt='category image'>
+                            <img class='category-img' src='../img/$categoryImgName' alt='category image'>
                         </div>
                         <div style='padding: 1rem;'>
-                            <p>
+                            <p class='card-name'>
                                 <b>$title</b>
                             </p>
                             <p>
@@ -106,49 +114,8 @@ if ($result) {
         } else {
             echo "<p>No hay productos 😢</p>";
         }
-
-
         ?>
     </div>
 </main>
 
-<style>
-.products-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(21rem, 100%), 1fr));
-    gap: 1rem;
-}
-
-.products-container article {
-    margin: 0;
-    padding: 0;
-}
-
-.img-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    border-radius: 5px 0 0 5px;
-}
-
-.category-img {
-    flex-shrink: 0;
-    min-width: 100%;
-    min-height: 100%;
-    max-width: fit-content;
-    overflow: hidden;
-}
-
-form {
-    display: flex;
-    margin-bottom: 0;
-}
-form button {
-    flex: 1;
-    margin-left: -50px;
-    max-width: 12ch;
-    border-radius: 0 2rem 2rem 0;
-}
-</style>
 <?php include_once "../includes/footer.php" ?>

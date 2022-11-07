@@ -52,3 +52,61 @@ main.container {
   content: "";
   vertical-align: bottom;
 }
+
+a.warning.outline[role="button"] {
+  border-color: #bb2124;
+}
+
+.btn-action {
+  font-size: 14px;
+  padding: 0.3rem 0.5rem;
+}
+
+.card-name {
+  max-width: 25ch;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.products-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(21rem, 100%), 1fr));
+  gap: 1rem;
+}
+
+.products-container article {
+  margin: 0;
+  padding: 0;
+}
+
+.img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 5px 0 0 5px;
+}
+
+.category-img {
+  flex-shrink: 0;
+  min-width: 100%;
+  min-height: 100%;
+  max-width: fit-content;
+  overflow: hidden;
+}
+
+.search-bar {
+  display: flex;
+  margin-bottom: 0;
+}
+.search-bar button {
+  flex: 1;
+  margin-left: -50px;
+  max-width: 12ch;
+  border-radius: 0 2rem 2rem 0;
+}
+
+textarea.invalid {
+  border-color: #bb2124;
+}
